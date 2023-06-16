@@ -4,13 +4,21 @@ use ndarray::{Array1, Array2, Axis, s};
 
 fn main() {
 
-    let layer = LayerDense::new(2,3, |x| x);
 
     let (x,y) = nnfs::data::spiral_data(100, 3);
 
-    let outputs = layer.forward(&x);
+    let l1 = LayerDense::new(2,3);
+    let a1 = LayerActivation::new(relu);
+    let l2 = LayerDense::new(3,3);
+    let a2 = LayerActivation::new(softmax);
+    
+    let mut step;
+    step = l1.forward(x);
+    step = a1.forward(step);
+    step = l2.forward(step);
+    step = a2.forward(step);
 
-    println!("{:}", outputs.slice(s![0..5, ..]));
+    println!("{:}", step);
 
     //plot_data(&x, &y).unwrap();
 }

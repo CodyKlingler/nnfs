@@ -1,6 +1,6 @@
-use ndarray::{s, Axis, Array, Array1, Array2, stack, concatenate};
+use ndarray::{s, Axis, Array, Array1, Array2, concatenate};
 use rand_distr::{Normal, Distribution};
-use rand::{self, seq::index::sample};
+use rand::{self};
 use crate::Prec;
 
 /// Univariate “normal” (Gaussian) distribution of mean `0` and variance `1`
