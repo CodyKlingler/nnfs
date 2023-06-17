@@ -1,16 +1,17 @@
-use plotters;
-use nnfs::{layer::*, Prec};
-use ndarray::{Array1, Array2, Axis, s};
+use nnfs::{layer::*, activation::*, *};
+use ndarray::{Array1, Array2, Axis};
 
 fn main() {
-
-
     let (x,y) = nnfs::data::spiral_data(100, 3);
 
+    plot::plot_2d("spiral_actual.png", &x, &y).unwrap();
+
+    let x2 = x.clone();
+
     let l1 = LayerDense::new(2,3);
-    let a1 = LayerActivation::new(relu);
+    let a1 = LayerActivation::new(ActivationFn::Relu);
     let l2 = LayerDense::new(3,3);
-    let a2 = LayerActivation::new(softmax);
+    let a2 = LayerActivation::new(ActivationFn::Softmax);
     
     let mut step;
     step = l1.forward(x);
@@ -20,51 +21,18 @@ fn main() {
 
     println!("{:}", step);
 
-    //plot_data(&x, &y).unwrap();
+    let class = argmax(step);
+
+    plot::plot_2d("spiral_class.png", &x2, &class).unwrap();
 }
 
-use plotters::prelude::*;
+/// Takes a matrix of classification probabilities or one-hot encoding and returns 
+/// a vector of 
+pub fn argmax(output: Array2<Prec>) -> Array1<usize> {
+     /* nasty way to turn softmax output into class labels */
+     let class = output.map_axis(Axis(1), |row| row.into_iter()
+     .enumerate()
+     .fold( (0 as usize, Prec::MIN), |old, new| if old.1 > *new.1 {old} else {(new.0, *new.1)}));                                
 
-
-// TODO: add more colors. make view window dynamic.
-fn plot_data(x: &Array2<f32>, y: &Array1<u8>) -> Result<(), Box<dyn std::error::Error>> {
-    let root = BitMapBackend::new("plot.png", (640*2, 480*2)).into_drawing_area();
-    root.fill(&WHITE)?;
-
-    let mut chart = ChartBuilder::on(&root)
-        .caption("Scatter Plot", ("Arial", 20).into_font())
-        .margin(5)
-        .x_label_area_size(30)
-        .y_label_area_size(30)
-        .build_cartesian_2d(-1.0f32 .. 1.0f32, -1.0f32.. 1.0f32)?;
-
-    chart.configure_mesh().draw()?;
-
-    for (index, element) in y.iter().enumerate() {
-        let color = match *element {
-            0 => RED,
-            1 => GREEN,
-            _ => BLUE,
-        };
-
-        let point: (f32, f32) = (*x.get((index, 0)).unwrap(), *x.get((index, 1)).unwrap());
-        let point = vec![point];
-        chart.draw_series(PointSeries::of_element(
-            point, 
-            5, 
-            color,
-            &|c, s, st| {
-                return EmptyElement::at(c)    // We want to construct a composed element on-the-fly
-                + Circle::new((0,0),s,st.filled()) // At this point, the new pixel coordinate is established
-                //+ Text::new(format!("{:?}", c), (10, 0), ("sans-serif", 10).into_font());
-            }
-        ))?;
-    }
-
-    root.present()?;
-    Ok(())
+    class.map(|x| x.0)
 }
-
-
-
-

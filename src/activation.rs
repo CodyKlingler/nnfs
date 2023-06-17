@@ -1,5 +1,5 @@
-use ndarray::{Array1, Array2};
-use crate::{Prec};
+use ndarray::{Array1, Array2, Axis};
+use crate::{Prec, layer::*};
 
 
 pub enum ActivationFn {
@@ -53,7 +53,7 @@ pub fn sigmoid(inputs: Array2<Prec>) -> Array2<Prec> {
 
 
 pub fn softmax(inputs: Array2<Prec>) -> Array2<Prec> {
-    let max_row = inputs.fold_axis(Axis(0), Prec::MIN, |&a, &b| a.max(b));
+    let max_row = inputs.fold_axis(Axis(1), Prec::MIN, |&a, &b| a.max(b)).insert_axis(Axis(1));
     let exp = (&inputs - &max_row).mapv(|x| x.exp());
     let sum = exp.sum_axis(Axis(1)).insert_axis(Axis(1));
     exp / sum
