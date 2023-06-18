@@ -3,20 +3,6 @@ use rand_distr::{Normal, Distribution};
 use rand::{self};
 use crate::Prec;
 
-/// Univariate “normal” (Gaussian) distribution of mean `0` and variance `1`
-pub fn random_matrix(n:usize, m:usize) -> Array2<Prec> {
-    let normal_distribution = Normal::new(0., 1.).unwrap();
-    let rand_norm = || normal_distribution.sample(&mut rand::thread_rng());
-    Array::from_shape_simple_fn((n, m), rand_norm)
-}
-
-/// Univariate “normal” (Gaussian) distribution of mean `0` and variance `1`
-pub fn random_vector(n:usize) -> Array1<Prec> {
-    let normal_distribution = Normal::new(0., 1.).unwrap();
-    let rand_norm = || normal_distribution.sample(&mut rand::thread_rng());
-    Array1::from_shape_simple_fn(n, rand_norm)
-}
-
 /// Create spiral data set.
 /// outputs `(x, y)` where `x` is the data matrix and `y` is the label vector.
 /// See <https://cs231n.github.io/neural-networks-case-study/>

@@ -15,7 +15,7 @@ impl LayerDense {
 
     pub fn new(n_inputs: usize, n_neurons: usize) -> LayerDense{
 
-        let weights = crate::data::random_matrix(n_inputs, n_neurons);
+        let weights = crate::dataset::random_matrix(n_inputs, n_neurons);
         let biases = Array1::zeros(n_neurons);
 
         LayerDense { weights, biases }
