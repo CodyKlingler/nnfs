@@ -1,4 +1,7 @@
-
+use ndarray::{s, Axis, Array, Array1, Array2};
+use crate::{*};
+use rand_distr::{Normal, Distribution};
+use rand::{self};
 
 /// Computes the row-wise argmax of a matrix.
 /// Used to turn matrix of classification probabilities or one-hot encoding into vector of class values.

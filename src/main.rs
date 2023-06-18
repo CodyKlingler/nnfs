@@ -1,36 +1,34 @@
-use nnfs::{layer::*, activation::*, *};
+use nnfs::{*, layer::*, activation::*};
 use ndarray::{Array1, Array2, Axis};
+use vec_box::vec_box;
 
 fn main() {
-    let (x,y) = nnfs::data::spiral_data(600, 3);
+    let (x,y_true) = dataset::spiral_data(10, 3);
 
-    plot::plot_2d("spiral_actual.png", &x, &y).unwrap();
+    plot::plot_2d("spiral_actual.png", &x, &y_true).unwrap();
 
     let x2 = x.clone();
 
-    let l1 = LayerDense::new(2,3);
-    let a1 = LayerActivation::new(ActivationFn::Relu);
-    let l2 = LayerDense::new(3,3);
-    let a2 = LayerActivation::new(ActivationFn::Softmax);
-    
-    let mut step;
-    step = l1.forward(x);
-    step = a1.forward(step);
-    step = l2.forward(step);
-    step = a2.forward(step);
+    let network: Vec<Box<dyn Layer>> = vec_box![
+        LayerDense::new(2,3),
+        ActivationFn::Relu,
+        LayerDense::new(3,3),
+        ActivationFn::Softmax,
+        ];
 
-    println!("{:}", step);
+    let forward_pass = |network: Vec<Box<dyn Layer>>, input| {network.iter().fold(input, |step, layer| layer.forward(step))};
 
-    let predicted_classes = argmax(&step);
+    let y_prob = forward_pass(network, x);
+    let y_pred = util::argmax(&y_prob);
 
+    println!("{:#?}", y_prob);
+    println!("{:#?}", y_pred);
 
-    println!("{:#?}", step);
+    plot::plot_2d("spiral_class.png", &x2, &y_pred).unwrap();
 
-    plot::plot_2d("spiral_class.png", &x2, &predicted_classes).unwrap();
-
-    let loss = categorical_loss_entropy(&step, &y);
+    let loss = categorical_loss_entropy(&y_prob, &y_true);
     println!("loss: {:#?}", loss);
-    println!("y_len: {:}", y.len());
+    println!("y_len: {:}", y_true.len());
 }
 
 

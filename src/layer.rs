@@ -1,5 +1,5 @@
 use ndarray::{Array1, Array2};
-use crate::{Prec};
+use crate::{*};
 
 pub struct LayerDense  {
     pub weights: Array2<Prec>,
@@ -15,7 +15,7 @@ impl LayerDense {
 
     pub fn new(n_inputs: usize, n_neurons: usize) -> LayerDense{
 
-        let weights = crate::dataset::random_matrix(n_inputs, n_neurons);
+        let weights = util::random_matrix(n_inputs, n_neurons);
         let biases = Array1::zeros(n_neurons);
 
         LayerDense { weights, biases }

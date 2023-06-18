@@ -440,6 +440,7 @@ dependencies = [
  "plotters",
  "rand",
  "rand_distr",
+ "vec_box",
 ]
 
 [[package]]
@@ -773,6 +774,12 @@ name = "unicode-ident"
 version = "1.0.9"
 source = "registry+https://github.com/rust-lang/crates.io-index"
 checksum = "b15811caf2415fb889178633e7724bad2509101cde276048e013b9def5e51fa0"
+
+[[package]]
+name = "vec_box"
+version = "1.0.0"
+source = "registry+https://github.com/rust-lang/crates.io-index"
+checksum = "c5283fc94a1cd6b5199f707a4b4d7f885b9457d430d111c68a07d3e3d199fb2b"
 
 [[package]]
 name = "walkdir"

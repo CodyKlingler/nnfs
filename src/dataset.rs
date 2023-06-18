@@ -1,7 +1,5 @@
 use ndarray::{s, Axis, Array, Array1, Array2, concatenate};
-use rand_distr::{Normal, Distribution};
-use rand::{self};
-use crate::Prec;
+use crate::{*, util::*};
 
 /// Create spiral data set.
 /// outputs `(x, y)` where `x` is the data matrix and `y` is the label vector.
